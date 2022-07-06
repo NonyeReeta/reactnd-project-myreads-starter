@@ -8,7 +8,7 @@ import SearchBooks from "./searchBook";
 ReactDOM.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<App />} />
+      <Route path="*" element={<App />} />
       <Route path="/searchBooks" element={<SearchBooks />} />
     </Routes>
   </BrowserRouter>,

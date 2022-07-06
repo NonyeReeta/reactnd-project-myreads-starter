@@ -4,24 +4,23 @@ import * as BooksAPI from "./BooksAPI";
 
 class SearchBooks extends Component {
   state = {
-    books: [],
+    queriedBooks: [],
     currentlyReading: [],
     wantToRead: [],
     read: [],
     query: "",
   };
-  componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      books.map((book) => (book.shelf = "None"));
-      this.setState(() => ({
-        books,
-      }));
-    });
-  }
+
   updateQuery = (query) => {
     this.setState(() => ({
-      query: query,
+      query: query.toLowerCase(),
     }));
+    const searchPromise = BooksAPI.search(query);
+    searchPromise.then((books) => {
+      this.setState({
+        queriedBooks: books,
+      });
+    });
   };
   updateShelf = (book) => (event) => {
     const shelf = event.target.value;
@@ -30,12 +29,10 @@ class SearchBooks extends Component {
       shelf: book,
     }));
     BooksAPI.update(book, shelf);
+    console.log(book);
   };
   render() {
-    const { query, books } = this.state;
-    const queriedBooks = books.filter((book) =>
-      book.title.toLowerCase().includes(query.toLowerCase())
-    );
+    const { query, queriedBooks } = this.state;
 
     return (
       <div>
@@ -54,47 +51,47 @@ class SearchBooks extends Component {
             </div>
           </div>
           <div className="search-books-results">
-            <ol className="books-grid">
-              {queriedBooks.map((queriedBook) => (
-                <li key={queriedBook.title}>
-                  <div className="book">
-                    <div className="book-top">
-                      <div
-                        className="book-cover"
-                        style={{
-                          width: 128,
-                          height: 193,
-                          backgroundImage: `url(${
-                            queriedBook.imageLinks.thumbnail
-                          })`,
-                        }}
-                      />
-                      <div className="book-shelf-changer">
-                        <select
-                          onChange={this.updateShelf(queriedBook)}
-                          defaultValue={"move"}
-                        >
-                          <option value="move" disabled>
-                            Move to...
-                          </option>
-                          <option value="currentlyReading">
-                            Currently Reading
-                          </option>
+            {query.length !== 0 && (
+              <ol className="books-grid">
+                {queriedBooks.map((book) => (
+                  <li key={book.title}>
+                    <div className="book">
+                      <div className="book-top">
+                        <div
+                          className="book-cover"
+                          style={{
+                            width: 128,
+                            height: 193,
+                            backgroundImage: `url(${
+                              book.imageLinks.thumbnail
+                            })`,
+                          }}
+                        />
+                        <div className="book-shelf-changer">
+                          <select
+                            onChange={this.updateShelf(book)}
+                            defaultValue={"move"}
+                          >
+                            <option value="move" disabled>
+                              Move to...
+                            </option>
+                            <option value="currentlyReading">
+                              Currently Reading
+                            </option>
 
-                          <option value="wantToRead">Want to Read</option>
-                          <option value="read">Read</option>
-                          <option value="none">None</option>
-                        </select>
+                            <option value="wantToRead">Want to Read</option>
+                            <option value="read">Read</option>
+                            <option value="none">None</option>
+                          </select>
+                        </div>
                       </div>
+                      <div className="book-title">{book.title}</div>
+                      <div className="book-authors">{book.authors}</div>
                     </div>
-                    <div className="book-title">{queriedBook.title}</div>
-                    <div className="book-authors">
-                      {queriedBook.authors.join(", ")}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ol>
+                  </li>
+                ))}
+              </ol>
+            )}
           </div>
         </div>
       </div>
