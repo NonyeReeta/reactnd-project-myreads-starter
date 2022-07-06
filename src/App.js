@@ -15,8 +15,12 @@ class BooksApp extends Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     // showSearchPage: false,
+    currentlyReading: [],
+    wantToRead: [],
+    read: [],
   };
 
+  addBookToShelf() {}
   render() {
     return (
       <div className="app">
@@ -207,9 +211,7 @@ class BooksApp extends Component {
           </div>
           <div className="open-search">
             <Link to="/searchBooks">
-              <button onClick={() => this.setState({ showSearchPage: true })}>
-                Add a book
-              </button>
+              <button>Add a book</button>
             </Link>
           </div>
         </div>

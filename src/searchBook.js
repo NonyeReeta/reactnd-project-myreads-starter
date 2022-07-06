@@ -5,31 +5,34 @@ import * as BooksAPI from "./BooksAPI";
 class SearchBooks extends Component {
   state = {
     queriedBooks: [],
-    currentlyReading: [],
-    wantToRead: [],
-    read: [],
     query: "",
   };
 
   updateQuery = (query) => {
     this.setState(() => ({
-      query: query.toLowerCase(),
+      query: query.trim(),
     }));
-    const searchPromise = BooksAPI.search(query);
-    searchPromise.then((books) => {
-      this.setState({
-        queriedBooks: books,
+    if (query.length !== 0) {
+      const searchPromise = BooksAPI.search(query);
+      searchPromise.then((books) => {
+        const searchedBooks = books.map((b) => ({ ...b, shelf: "none" }));
+        this.setState({
+          queriedBooks: searchedBooks,
+        });
       });
-    });
+    }
   };
   updateShelf = (book) => (event) => {
     const shelf = event.target.value;
     book.shelf = shelf;
     this.setState((currentState) => ({
-      shelf: book,
+      shelf: currentState.queriedBooks.filter((queriedBook) => {
+        return queriedBook === book;
+      }),
     }));
-    BooksAPI.update(book, shelf);
-    console.log(book);
+    BooksAPI.update(book, shelf).then((response) => {
+      console.log(response);
+    });
   };
   render() {
     const { query, queriedBooks } = this.state;
@@ -51,6 +54,7 @@ class SearchBooks extends Component {
             </div>
           </div>
           <div className="search-books-results">
+            {queriedBooks === "undefined" && <ol />}
             {query.length !== 0 && (
               <ol className="books-grid">
                 {queriedBooks.map((book) => (
