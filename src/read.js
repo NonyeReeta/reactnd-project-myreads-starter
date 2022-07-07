@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import * as BooksAPI from "./BooksAPI";
 
-class WantToRead extends Component {
+class Read extends Component {
   state = {
-    wantToRead: [],
+    read: [],
   };
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      const lib = books.filter((book) => book.shelf === "wantToRead");
+      const lib = books.filter((book) => book.shelf === "read");
       this.setState(() => ({
-        wantToRead: lib,
+        read: lib,
       }));
     });
   }
@@ -21,11 +21,11 @@ class WantToRead extends Component {
     });
   };
   render() {
-    const { wantToRead } = this.state;
+    const { read } = this.state;
     return (
       <div className="bookshelf-books">
         <ol className="books-grid">
-          {wantToRead.map((book) => (
+          {read.map((book) => (
             <li key={book.title}>
               <div className="book">
                 <div className="book-top">
@@ -66,4 +66,4 @@ class WantToRead extends Component {
   }
 }
 
-export default WantToRead;
+export default Read;

@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
+// import PropTypes from "prop-types";
 
 class SearchBooks extends Component {
   state = {
     queriedBooks: [],
     query: "",
   };
-
   updateQuery = (query) => {
     this.setState(() => ({
       query: query.trim(),
@@ -22,9 +22,11 @@ class SearchBooks extends Component {
       });
     }
   };
+
   updateShelf = (book) => (event) => {
     const shelf = event.target.value;
     book.shelf = shelf;
+    console.log(book.shelf);
     this.setState((currentState) => ({
       shelf: currentState.queriedBooks.filter((queriedBook) => {
         return queriedBook === book;
@@ -36,7 +38,6 @@ class SearchBooks extends Component {
   };
   render() {
     const { query, queriedBooks } = this.state;
-
     return (
       <div>
         <div className="search-books">
@@ -103,4 +104,7 @@ class SearchBooks extends Component {
   }
 }
 
+// SearchBooks.propTypes = {
+//   getShelf: PropTypes.func.isRequired,
+// };
 export default SearchBooks;
