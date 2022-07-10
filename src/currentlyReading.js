@@ -4,29 +4,27 @@ import * as BooksAPI from "./BooksAPI";
 class CurrentlyReading extends Component {
   state = {
     currentlyReading: [],
+    isLoading: true,
   };
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       const lib = books.filter((book) => book.shelf === "currentlyReading");
       this.setState(() => ({
         currentlyReading: lib,
+        isLoading: false,
       }));
     });
   }
   updateShelf = (book) => (event) => {
     const shelf = event.target.value;
     book.shelf = shelf;
-    BooksAPI.update(book, shelf).then((response) => {
-      BooksAPI.get(book.id).then((book) => {
-        this.setState((cs) => ({
-          currentlyReading: cs.currentlyReading.push(book),
-        }));
-      });
-    });
+    BooksAPI.update(book, shelf);
   };
   render() {
     const { currentlyReading } = this.state;
-    console.log(currentlyReading);
+    // if (isLoading !== true) {
+    //   console.log(currentlyReading[0].shelf);
+    // }
     return (
       <div className="bookshelf-books">
         <ol className="books-grid">
