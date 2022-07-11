@@ -1,23 +1,40 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
-// import PropTypes from "prop-types";
 
 class SearchBooks extends Component {
   state = {
     queriedBooks: [],
     query: "",
+    booksWithShelf: [],
   };
+  componentDidMount() {
+    BooksAPI.getAll().then((books) => {
+      this.setState(() => ({
+        booksWithShelf: books,
+      }));
+    });
+  }
   updateQuery = (query) => {
     this.setState(() => ({
       query: query.trim(),
     }));
+
     if (query.length !== 0) {
       const searchPromise = BooksAPI.search(query);
       searchPromise.then((books) => {
-        const searchedBooks = books.map((b) => ({ ...b, shelf: "none" }));
+        // ids and queriedBooksId logic from "https://stackoverflow.com/questions/54134156/javascript-merge-two-arrays-of-objects-only-if-not-duplicate-based-on-specifi"
+        let ids = new Set(this.state.booksWithShelf.map((book) => book.id));
+        let queriedBooksId = new Set(books.map((book) => book.id));
+
         this.setState({
-          queriedBooks: searchedBooks,
+          /* if a queried book has a shelf property, then display that book instead of the raw book data that has no shelf property */
+          queriedBooks: [
+            ...this.state.booksWithShelf.filter((b) =>
+              queriedBooksId.has(b.id)
+            ),
+            ...books.filter((b) => !ids.has(b.id)),
+          ],
         });
       });
     }
@@ -33,7 +50,7 @@ class SearchBooks extends Component {
       }),
     }));
     BooksAPI.update(book, shelf).then((response) => {
-      console.log(response);
+      return;
     });
   };
   render() {
@@ -75,7 +92,7 @@ class SearchBooks extends Component {
                         <div className="book-shelf-changer">
                           <select
                             onChange={this.updateShelf(book)}
-                            defaultValue={"move"}
+                            defaultValue={book.shelf ? book.shelf : "none"}
                           >
                             <option value="move" disabled>
                               Move to...

@@ -4,7 +4,6 @@ import * as BooksAPI from "./BooksAPI";
 class WantToRead extends Component {
   state = {
     wantToRead: [],
-    isLoading: true,
   };
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
@@ -43,7 +42,7 @@ class WantToRead extends Component {
                   <div className="book-shelf-changer">
                     <select
                       onChange={this.updateShelf(book)}
-                      defaultValue={"move"}
+                      defaultValue={book.shelf}
                     >
                       <option value="move" disabled>
                         Move to...

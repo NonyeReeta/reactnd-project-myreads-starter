@@ -4,21 +4,24 @@ import * as BooksAPI from "./BooksAPI";
 class CurrentlyReading extends Component {
   state = {
     currentlyReading: [],
-    isLoading: true,
   };
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       const lib = books.filter((book) => book.shelf === "currentlyReading");
       this.setState(() => ({
         currentlyReading: lib,
-        isLoading: false,
       }));
+      console.log(this.currentlyReading);
     });
   }
   updateShelf = (book) => (event) => {
     const shelf = event.target.value;
     book.shelf = shelf;
     BooksAPI.update(book, shelf);
+    this.setState(() => ({
+      // isLoading: false,
+    }));
+    // window.location.reload(false);
   };
   render() {
     const { currentlyReading } = this.state;
@@ -45,7 +48,7 @@ class CurrentlyReading extends Component {
                   <div className="book-shelf-changer">
                     <select
                       onChange={this.updateShelf(book)}
-                      defaultValue={"move"}
+                      defaultValue={book.shelf}
                     >
                       <option value="move" disabled>
                         Move to...
