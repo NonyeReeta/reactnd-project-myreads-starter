@@ -97,6 +97,7 @@ class SearchBooks extends Component {
                             <option value="move" disabled>
                               Move to...
                             </option>
+
                             <option value="currentlyReading">
                               Currently Reading
                             </option>

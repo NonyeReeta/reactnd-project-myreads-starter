@@ -4,16 +4,33 @@ import CurrentlyReading from "./currentlyReading";
 import Read from "./read";
 import WantToRead from "./wantToRead";
 import { Link } from "react-router-dom";
+import * as BooksAPI from "./BooksAPI";
 
 class BooksApp extends Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    // showSearchPage: false,
+    currentlyReading: [],
+    wantToRead: [],
+    read: [],
+  };
+  componentDidMount() {
+    BooksAPI.getAll().then((books) => {
+      this.setState({
+        currentlyReading: books.filter(
+          (book) => book.shelf === "currentlyReading"
+        ),
+        wantToRead: books.filter((book) => book.shelf === "wantToRead"),
+        read: books.filter((book) => book.shelf === "read"),
+      });
+    });
+  }
+  updateShelf = (book) => (event) => {
+    const shelf = event.target.value;
+    book.shelf = shelf;
+    BooksAPI.update(book, shelf);
+    this.setState((currentState) => ({
+      shelf: [currentState.shelf, book],
+    }));
+    console.log(this.state.read);
   };
 
   render() {
@@ -27,20 +44,26 @@ class BooksApp extends Component {
             <div>
               <div className="bookshelf">
                 <h2 className="bookshelf-title">Currently Reading</h2>
-                <CurrentlyReading />
+                <CurrentlyReading
+                  books={this.state.currentlyReading}
+                  onAdd={this.updateShelf}
+                />
               </div>
               <div className="bookshelf">
                 <h2 className="bookshelf-title">Want to Read</h2>
-                <WantToRead />
+                <WantToRead
+                  books={this.state.wantToRead}
+                  onAdd={this.updateShelf}
+                />
               </div>
               <div className="bookshelf">
                 <h2 className="bookshelf-title">Read</h2>
-                <Read />
+                <Read books={this.state.read} onAdd={this.updateShelf} />
               </div>
             </div>
           </div>
           <div className="open-search">
-            <Link to="/searchBooks">
+            <Link to="/search">
               <button>Add a book</button>
             </Link>
           </div>
