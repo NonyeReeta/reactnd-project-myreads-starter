@@ -17,12 +17,15 @@ class SearchBooks extends Component {
   }
   updateQuery = (query) => {
     this.setState(() => ({
-      query: query.trim(),
+      query: query,
     }));
 
     if (query.length !== 0) {
       const searchPromise = BooksAPI.search(query);
       searchPromise.then((books) => {
+        if (books.error) {
+          books = [];
+        }
         // ids and queriedBooksId logic from "https://stackoverflow.com/questions/54134156/javascript-merge-two-arrays-of-objects-only-if-not-duplicate-based-on-specifi"
         let ids = new Set(this.state.booksWithShelf.map((book) => book.id));
         let queriedBooksId = new Set(books.map((book) => book.id));
