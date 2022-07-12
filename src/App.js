@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
-import CurrentlyReading from "./currentlyReading";
-import Read from "./read";
-import WantToRead from "./wantToRead";
+import CurrentlyReading from "./CurrentlyReading";
+import Read from "./Read";
+import WantToRead from "./WantToRead";
 import { Link } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
 

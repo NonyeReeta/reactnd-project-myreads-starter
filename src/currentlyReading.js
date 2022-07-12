@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Book from "./book";
+import Book from "./Book";
 
 class CurrentlyReading extends Component {
   static propTypes = {

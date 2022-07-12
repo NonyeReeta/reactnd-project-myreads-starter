@@ -22,7 +22,7 @@ class Book extends Component {
                   style={{
                     width: 128,
                     height: 193,
-                    backgroundImage: book.imageLinks.thumbnail
+                    backgroundImage: book.imageLinks
                       ? `url(${book.imageLinks.thumbnail})`
                       : "",
                   }}

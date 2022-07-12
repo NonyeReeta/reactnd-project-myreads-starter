@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
+import Book from "./Book";
 
 class SearchBooks extends Component {
   state = {
@@ -46,7 +47,6 @@ class SearchBooks extends Component {
   updateShelf = (book) => (event) => {
     const shelf = event.target.value;
     book.shelf = shelf;
-    console.log(book.shelf);
     this.setState((currentState) => ({
       shelf: currentState.queriedBooks.filter((queriedBook) => {
         return queriedBook === book;
@@ -77,46 +77,7 @@ class SearchBooks extends Component {
           <div className="search-books-results">
             {queriedBooks === "undefined" && <ol />}
             {query.length !== 0 && (
-              <ol className="books-grid">
-                {queriedBooks.map((book) => (
-                  <li key={book.title}>
-                    <div className="book">
-                      <div className="book-top">
-                        <div
-                          className="book-cover"
-                          style={{
-                            width: 128,
-                            height: 193,
-                            backgroundImage: `url(${
-                              book.imageLinks.thumbnail
-                            })`,
-                          }}
-                        />
-                        <div className="book-shelf-changer">
-                          <select
-                            onChange={this.updateShelf(book)}
-                            defaultValue={book.shelf ? book.shelf : "none"}
-                          >
-                            <option value="move" disabled>
-                              Move to...
-                            </option>
-
-                            <option value="currentlyReading">
-                              Currently Reading
-                            </option>
-
-                            <option value="wantToRead">Want to Read</option>
-                            <option value="read">Read</option>
-                            <option value="none">None</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="book-title">{book.title}</div>
-                      <div className="book-authors">{book.authors}</div>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <Book books={queriedBooks} onAdd={this.updateShelf} />
             )}
           </div>
         </div>
@@ -125,7 +86,4 @@ class SearchBooks extends Component {
   }
 }
 
-// SearchBooks.propTypes = {
-//   getShelf: PropTypes.func.isRequired,
-// };
 export default SearchBooks;

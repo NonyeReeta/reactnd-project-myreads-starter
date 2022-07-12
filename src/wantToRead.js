@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Book from "./book";
+import Book from "./Book";
 import PropTypes from "prop-types";
 
 class WantToRead extends Component {
