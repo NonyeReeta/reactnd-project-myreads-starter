@@ -7,11 +7,14 @@ import { Link } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
 
 class BooksApp extends Component {
-  state = {
-    currentlyReading: [],
-    wantToRead: [],
-    read: [],
-  };
+  constructor() {
+    super();
+    this.state = {
+      currentlyReading: [],
+      wantToRead: [],
+      read: [],
+    };
+  }
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({
@@ -26,11 +29,27 @@ class BooksApp extends Component {
   updateShelf = (book) => (event) => {
     const shelf = event.target.value;
     book.shelf = shelf;
+    this.setState({
+      currentlyReading:
+        book.shelf === "currentlyReading"
+          ? [...this.state.currentlyReading, book]
+          : this.state.currentlyReading.some((item) => item.id === book.id)
+          ? [...this.state.currentlyReading.filter((b) => b.id !== book.id)]
+          : [...this.state.currentlyReading],
+      wantToRead:
+        book.shelf === "wantToRead"
+          ? [...this.state.wantToRead, book]
+          : this.state.wantToRead.some((item) => item.id === book.id)
+          ? [...this.state.wantToRead.filter((b) => b.id !== book.id)]
+          : [...this.state.wantToRead],
+      read:
+        book.shelf === "read"
+          ? [...this.state.read, book]
+          : this.state.read.some((item) => item.id === book.id)
+          ? [...this.state.read.filter((b) => b.id !== book.id)]
+          : [...this.state.read],
+    });
     BooksAPI.update(book, shelf);
-    this.setState((currentState) => ({
-      shelf: [currentState.shelf, book],
-    }));
-    console.log(this.state.read);
   };
 
   render() {
